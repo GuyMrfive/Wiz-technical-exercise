@@ -2,7 +2,7 @@ targetScope = 'resourceGroup'
 
 param location string = resourceGroup().location
 param prefix string = 'wiz'
-param acrName string //Globally unique container registry name
+param acrName string 
 param sshPublicKey string
 param storageAccountName string
 
