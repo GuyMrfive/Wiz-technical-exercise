@@ -27,12 +27,13 @@ resource aks 'Microsoft.ContainerService/managedClusters@2024-09-01' = {
     agentPoolProfiles: [
       {
         name: 'systempool'
-        count: 1
-        vmSize: 'Standard_B2s'
+        count: 2
+        vmSize: 'Standard_D2s_v5'
         mode: 'System'
         osType: 'Linux'
         type: 'VirtualMachineScaleSets'
         vnetSubnetID: subnetId
+        osDiskSizeGB: 32
       }
     ]
 
