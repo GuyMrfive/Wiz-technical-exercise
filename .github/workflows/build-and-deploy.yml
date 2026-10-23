@@ -72,6 +72,16 @@ jobs:
             --wait \
             --timeout 5m
 
+      - name: Create Kubernetes Secret
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          SECRET_KEY: ${{ secrets.TASKY_SECRET_KEY }}
+        run: |
+          kubectl create secret generic tasky-secrets \
+            --from-literal=mongodb-uri="$MONGODB_URI" \
+            --from-literal=secret-key="$SECRET_KEY" \
+            --dry-run=client -o yaml | kubectl apply -f -
+
       - name: Apply Kubernetes manifests
         run: |
           kubectl apply -f k8s/
