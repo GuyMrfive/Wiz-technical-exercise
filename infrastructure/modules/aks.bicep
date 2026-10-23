@@ -1,10 +1,7 @@
 
 param location string = resourceGroup().location
 param prefix string = 'wiz'
-
-@description('Subnet ID from network.bicep')
 param subnetId string
-
 
 resource aks 'Microsoft.ContainerService/managedClusters@2024-09-01' = {
   name: 'aks-${prefix}-exercise'

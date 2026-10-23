@@ -1,10 +1,7 @@
 
 param location string = resourceGroup().location
-
-@description('Globally unique storage account name')
 param storageAccountName string
 
-// Storage account for MongoDB backups
 resource storage 'Microsoft.Storage/storageAccounts@2023-05-01' = {
   name: storageAccountName
   location: location

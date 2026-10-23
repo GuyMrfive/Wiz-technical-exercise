@@ -1,8 +1,4 @@
-
-@description('Azure region')
 param location string = resourceGroup().location
-
-@description('Globally unique ACR name (5-50 alphanumeric characters)')
 param acrName string
 
 resource acr 'Microsoft.ContainerRegistry/registries@2023-07-01' = {

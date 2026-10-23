@@ -5,7 +5,6 @@ param prefix string = 'wiz'
 var aksSubnetPrefix = '10.0.1.0/24'
 var dbSubnetPrefix = '10.0.2.0/24'
 
-// AKS Network Security Group
 resource aksNsg 'Microsoft.Network/networkSecurityGroups@2024-05-01' = {
   name: 'nsg-${prefix}-aks'
   location: location
@@ -27,7 +26,6 @@ resource aksNsg 'Microsoft.Network/networkSecurityGroups@2024-05-01' = {
     ]
   }
 }
-
 
 resource dbNsg 'Microsoft.Network/networkSecurityGroups@2024-05-01' = {
   name: 'nsg-${prefix}-db'
@@ -77,7 +75,6 @@ resource dbNsg 'Microsoft.Network/networkSecurityGroups@2024-05-01' = {
   }
 }
 
-
 resource vnet 'Microsoft.Network/virtualNetworks@2024-05-01' = {
   name: 'vnet-${prefix}-exercise'
   location: location
@@ -110,7 +107,6 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-05-01' = {
     ]
   }
 }
-
 
 output vnetId string = vnet.id
 output aksSubnetId string = vnet.properties.subnets[0].id

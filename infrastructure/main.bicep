@@ -31,50 +31,46 @@ module aks './modules/aks.bicep' = {
     }
   }
 
-  
-  module vm './modules/vm.bicep' = {
-    name: 'mongodb-vm-deployment'
-    params: {
-      location: location
-      prefix: prefix
-      subnetId: network.outputs.dbSubnetId
-      sshPublicKey: sshPublicKey
-    }
+module vm './modules/vm.bicep' = {
+  name: 'mongodb-vm-deployment'
+  params: {
+    location: location
+    prefix: prefix
+    subnetId: network.outputs.dbSubnetId
+    sshPublicKey: sshPublicKey
   }
+}
 
   
-  module storage './modules/storage.bicep' = {
-    name: 'storage-deployment'
-    params: {
-      location: location
-      storageAccountName: storageAccountName
-    }
+module storage './modules/storage.bicep' = {
+  name: 'storage-deployment'
+  params: {
+    location: location
+    storageAccountName: storageAccountName
   }
+}
 
-  var blobContributorRoleId = subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
-  )
-  
-  resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' existing = {
-    name: storageAccountName
+var blobContributorRoleId = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+)
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' existing = {
+  name: storageAccountName
+}
+
+resource vmBackupRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(resourceGroup().id, storageAccountName, 'vm-${prefix}-mongodb-backup-v2', blobContributorRoleId)
+  scope: storageAccount
+  properties: {
+    roleDefinitionId: blobContributorRoleId
+    principalId: vm.outputs.vmPrincipalId
+    principalType: 'ServicePrincipal'
   }
-  
-  resource vmBackupRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-    name: guid(resourceGroup().id, storageAccountName, 'vm-${prefix}-mongodb-backup-v2', blobContributorRoleId)
-    scope: storageAccount
-    properties: {
-      roleDefinitionId: blobContributorRoleId
-      principalId: vm.outputs.vmPrincipalId
-      principalType: 'ServicePrincipal'
-    }
-    dependsOn: [
-      storage
-    ]
-  }
-
-  
-
+  dependsOn: [
+    storage
+  ]
+}
 
 output aksName string = aks.outputs.name
 output acrLoginServer string = acr.outputs.loginServer
