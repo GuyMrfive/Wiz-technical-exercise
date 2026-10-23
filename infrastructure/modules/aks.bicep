@@ -49,22 +49,5 @@ resource aks 'Microsoft.ContainerService/managedClusters@2024-09-01' = {
   }
 }
 
-// Built-in AcrPull role
-var acrPullRoleId = subscriptionResourceId(
-  'Microsoft.Authorization/roleDefinitions',
-  '7f951dda-4ed3-4680-a7ca-43fe172d538d'
-)
-
-// Grant AKS kubelet identity access to ACR
-resource acrPull 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(acrId, aks.name, 'AcrPull')
-  scope: resourceGroup()
-  properties: {
-    roleDefinitionId: acrPullRoleId
-    principalId: aks.properties.identityProfile.kubeletidentity.objectId
-    principalType: 'ServicePrincipal'
-  }
-}
-
 output name string = aks.name
 output id string = aks.id
