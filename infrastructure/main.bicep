@@ -62,7 +62,7 @@ module aks './modules/aks.bicep' = {
   }
   
   resource vmBackupRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-    name: guid(resourceGroup().id, storageAccountName, 'vm-${prefix}-mongodb', blobContributorRoleId)
+    name: guid(resourceGroup().id, principalId, roleDefinitionId)
     scope: storageAccount
     properties: {
       roleDefinitionId: blobContributorRoleId
