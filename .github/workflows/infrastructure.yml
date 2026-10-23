@@ -45,9 +45,9 @@ jobs:
             --template-file infrastructure/main.bicep \
             --parameters infrastructure/main.bicepparam
 
-      - name: Deploy
-        run: |
-          az deployment group create \
-            --resource-group rg-wiz-exercise \
-            --template-file infrastructure/main.bicep \
-            --parameters infrastructure/main.bicepparam
+      # - name: Deploy
+      #   run: |
+      #     az deployment group create \
+      #       --resource-group rg-wiz-exercise \
+      #       --template-file infrastructure/main.bicep \
+      #       --parameters infrastructure/main.bicepparam
