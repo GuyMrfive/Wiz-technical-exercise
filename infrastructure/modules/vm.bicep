@@ -1,17 +1,10 @@
 
 param location string = resourceGroup().location
 param prefix string = 'wiz'
-
-@description('Database subnet ID from network.bicep')
 param subnetId string
-
-@description('Linux administrator username')
 param adminUsername string = 'azureuser'
-
-@description('SSH public key')
 param sshPublicKey string
 
-// Public IP for SSH access
 resource publicIp 'Microsoft.Network/publicIPAddresses@2024-05-01' = {
   name: 'pip-${prefix}-mongodb'
   location: location
@@ -23,7 +16,6 @@ resource publicIp 'Microsoft.Network/publicIPAddresses@2024-05-01' = {
   }
 }
 
-// Network interface
 resource nic 'Microsoft.Network/networkInterfaces@2024-05-01' = {
   name: 'nic-${prefix}-mongodb'
   location: location
@@ -46,7 +38,6 @@ resource nic 'Microsoft.Network/networkInterfaces@2024-05-01' = {
   }
 }
 
-// MongoDB Linux VM
 resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
   name: 'vm-${prefix}-mongodb'
   location: location
