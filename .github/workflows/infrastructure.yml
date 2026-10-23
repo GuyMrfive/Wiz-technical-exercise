@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'infrastructure/**'      
 
 env:
   SSH_PUBLIC_KEY: ${{ vars.SSH_PUBLIC_KEY }}
