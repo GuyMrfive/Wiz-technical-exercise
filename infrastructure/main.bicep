@@ -28,7 +28,6 @@ module aks './modules/aks.bicep' = {
       location: location
       prefix: prefix
       subnetId: network.outputs.aksSubnetId
-      acrId: acr.outputs.id
     }
   }
 
@@ -71,7 +70,6 @@ module aks './modules/aks.bicep' = {
     }
     dependsOn: [
       storage
-      vm
     ]
   }
 
