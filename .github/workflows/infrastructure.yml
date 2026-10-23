@@ -6,6 +6,9 @@ on:
     branches:
       - main
 
+env:
+  SSH_PUBLIC_KEY: ${{ vars.SSH_PUBLIC_KEY }}
+
 permissions:
   id-token: write
   contents: read
