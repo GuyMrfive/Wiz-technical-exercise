@@ -10,11 +10,25 @@ resource aksNsg 'Microsoft.Network/networkSecurityGroups@2024-05-01' = {
   name: 'nsg-${prefix}-aks'
   location: location
   properties: {
-    securityRules: []
+    securityRules: [
+      {
+        name: 'Allow-Inbound-Internet-Test'
+        properties: {
+          priority: 100
+          direction: 'Inbound'
+          access: 'Allow'
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRange: '*'
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: '*'
+         }
+        }
+    ]
   }
 }
 
-// MongoDB Network Security Group
+
 resource dbNsg 'Microsoft.Network/networkSecurityGroups@2024-05-01' = {
   name: 'nsg-${prefix}-db'
   location: location
@@ -63,7 +77,7 @@ resource dbNsg 'Microsoft.Network/networkSecurityGroups@2024-05-01' = {
   }
 }
 
-// Virtual Network with two subnets
+
 resource vnet 'Microsoft.Network/virtualNetworks@2024-05-01' = {
   name: 'vnet-${prefix}-exercise'
   location: location
@@ -97,7 +111,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-05-01' = {
   }
 }
 
-// Outputs for other Bicep modules
+
 output vnetId string = vnet.id
 output aksSubnetId string = vnet.properties.subnets[0].id
 output dbSubnetId string = vnet.properties.subnets[1].id
