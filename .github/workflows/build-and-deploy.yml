@@ -1,5 +1,5 @@
 
-name: Build and Push
+name: Build and Deploy Tasky
 
 on:
   workflow_dispatch:
@@ -14,7 +14,7 @@ permissions:
   id-token: write
 
 jobs:
-  build-and-push:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -45,3 +45,38 @@ jobs:
           tags: |
             ${{ secrets.ACR_NAME }}.azurecr.io/tasky:latest
             ${{ secrets.ACR_NAME }}.azurecr.io/tasky:${{ github.sha }}
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4.3.0
+
+      - name: Get AKS credentials
+        run: |
+          az aks get-credentials \
+            --resource-group rg-wiz-exercise \
+            --name aks-wiz-exercise \
+            --admin \
+            --overwrite-existing
+
+      - name: Install or upgrade NGINX Ingress
+        run: |
+          helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+          helm repo update
+
+          helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
+            --namespace ingress-nginx \
+            --create-namespace \
+            --set controller.service.type=LoadBalancer \
+            --wait \
+            --timeout 5m
+
+      - name: Apply Kubernetes manifests
+        run: |
+          kubectl apply -f k8s/
+
+      - name: Deploy 
+        run: |
+          kubectl set image deployment/tasky \
+            tasky=${{ secrets.ACR_NAME }}.azurecr.io/tasky:${{ github.sha }}
