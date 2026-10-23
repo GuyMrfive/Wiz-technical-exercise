@@ -5,8 +5,6 @@ param prefix string = 'wiz'
 @description('Subnet ID from network.bicep')
 param subnetId string
 
-@description('ACR resource ID from acr.bicep')
-param acrId string
 
 resource aks 'Microsoft.ContainerService/managedClusters@2024-09-01' = {
   name: 'aks-${prefix}-exercise'
