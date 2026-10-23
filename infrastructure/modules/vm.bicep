@@ -81,6 +81,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
     osProfile: {
       computerName: 'mongodb'
       adminUsername: adminUsername
+      customData: base64(loadTextContent('../../scripts/mongodb/cloud-init.yaml'))
       linuxConfiguration: {
         disablePasswordAuthentication: true
         ssh: {

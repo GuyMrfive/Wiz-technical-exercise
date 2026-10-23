@@ -1,0 +1,45 @@
+#cloud-config
+package_update: true
+packages:
+  - curl
+  - gnupg
+  - ca-certificates
+  - cron
+  - tar
+  - gzip
+  - python3
+write_files:
+  - path: /usr/local/sbin/install-mongodb.sh
+    permissions: '0755'
+    content: |
+      #!/usr/bin/env bash
+      set -euo pipefail
+      # MongoDB 4.4 requires libssl1.1 and is incompatible with modern Ubuntu releases.
+      # This lab script expects Ubuntu 20.04 (focal) on x86_64.
+      . /etc/os-release
+      if [[ "$ID" != "ubuntu" || "$VERSION_ID" != "20.04" ]]; then
+        echo "Expected Ubuntu 20.04; found ${PRETTY_NAME}" >&2
+        exit 1
+      fi
+      curl -fsSL https://pgp.mongodb.com/server-4.4.asc | gpg --dearmor -o /usr/share/keyrings/mongodb-server-4.4.gpg
+      echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/mongodb-server-4.4.gpg] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse' > /etc/apt/sources.list.d/mongodb-org-4.4.list
+      apt-get update
+      DEBIAN_FRONTEND=noninteractive apt-get install -y mongodb-org
+      cat > /etc/mongod.conf <<'MONGO_CONF'
+      storage:
+        dbPath: /var/lib/mongodb
+      systemLog:
+        destination: file
+        path: /var/log/mongodb/mongod.log
+        logAppend: true
+      net:
+        port: 27017
+        bindIp: 0.0.0.0
+      security:
+        authorization: enabled
+      MONGO_CONF
+      systemctl enable mongod
+      systemctl restart mongod
+runcmd:
+  - [bash, /usr/local/sbin/install-mongodb.sh]
+  - [systemctl, enable, --now, cron]
