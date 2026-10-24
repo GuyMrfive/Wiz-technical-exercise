@@ -48,7 +48,7 @@ jobs:
             ${{ secrets.ACR_NAME }}.azurecr.io/tasky:${{ github.sha }}
 
       - name: Trivy Scan
-        uses: aquasecurity/trivy-action@0.36.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: image
           image-ref: ${{ secrets.ACR_NAME }}.azurecr.io/tasky:${{ github.sha }}
