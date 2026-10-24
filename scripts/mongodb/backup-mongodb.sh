@@ -16,7 +16,6 @@ trap 'rm -f "$archive"' EXIT
 
 mongodump --uri="$MONGODB_BACKUP_URI" --gzip --archive="$archive"
 
-# Azure CLI must be installed; VM identity must have Storage Blob Data Contributor.
 az login --identity --allow-no-subscriptions >/dev/null
 az storage blob upload \
   --account-name "$STORAGE_ACCOUNT" \

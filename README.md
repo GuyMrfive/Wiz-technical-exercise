@@ -110,3 +110,10 @@ az vm show \
 ```bash
 kubectl exec deployment/tasky -- cat /app/wizexercise.txt
 ```
+run trivy locally
+```bash
+trivy image --severity HIGH,CRITICAL tasky:latest
+```
+9. backup mongodb inside vm
+
+
