@@ -35,16 +35,31 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and push Docker image
+      - name: Build Docker image
         uses: docker/build-push-action@v6
         with:
           context: ./app
           file: ./app/Dockerfile
           platforms: linux/amd64
-          push: true
+          push: false
+          load: true
           tags: |
             ${{ secrets.ACR_NAME }}.azurecr.io/tasky:latest
             ${{ secrets.ACR_NAME }}.azurecr.io/tasky:${{ github.sha }}
+
+      - name: Trivy Scan
+        uses: aquasecurity/trivy-action@0.36.0
+        with:
+          scan-type: image
+          image-ref: ${{ secrets.ACR_NAME }}.azurecr.io/tasky:${{ github.sha }}
+          format: table
+          severity: HIGH,CRITICAL
+          exit-code: '0'
+
+      - name: Push Docker image to ACR
+        run: |
+          docker push ${{ secrets.ACR_NAME }}.azurecr.io/tasky:${{ github.sha }}
+          docker push ${{ secrets.ACR_NAME }}.azurecr.io/tasky:latest
 
       - name: Install kubectl
         uses: azure/setup-kubectl@v4
