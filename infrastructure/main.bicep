@@ -28,6 +28,7 @@ module aks './modules/aks.bicep' = {
       location: location
       prefix: prefix
       subnetId: network.outputs.aksSubnetId
+      logAnalyticsWorkspaceId: law.outputs.workspaceId
     }
   }
 
@@ -86,6 +87,22 @@ resource acrPullRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
     )
     principalId: aks.outputs.kubeletPrincipalId
     principalType: 'ServicePrincipal'
+  }
+}
+
+module law './modules/law.bicep' = {
+  name: 'deploy-law'
+  params: {
+    location: location
+    workspaceName: 'law-wiz-exercise'
+  }
+}
+
+module activityLogs './modules/diagnostic-settings.bicep' = {
+  name: 'deploy-activity-logs'
+  scope: subscription()
+  params: {
+    workspaceId: law.outputs.workspaceId
   }
 }
 

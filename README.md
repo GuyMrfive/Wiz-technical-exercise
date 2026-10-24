@@ -2,7 +2,7 @@
 
 # Deployments Guide
 1. Run Infrastructure Pipeline and verify rg-wiz-exercise existence 
-3. SSH into the Vm and verfiy MongoDB Deployment thorough Cloud init script, copy the init tasky script and run it. after that add
+3. SSH into the Vm and verfiy MongoDB Deployment thorough Cloud init script, copy the init tasky script and run it. after that add the DB Permission for the azureuser
 2. Run Deploy Pipeline, verify container Image through get service ingress
 3. 
 

@@ -2,6 +2,7 @@
 param location string = resourceGroup().location
 param prefix string = 'wiz'
 param subnetId string
+param logAnalyticsWorkspaceId string
 
 resource aks 'Microsoft.ContainerService/managedClusters@2024-09-01' = {
   name: 'aks-${prefix}-exercise'
@@ -41,6 +42,29 @@ resource aks 'Microsoft.ContainerService/managedClusters@2024-09-01' = {
       loadBalancerSku: 'standard'
       outboundType: 'loadBalancer'
     }
+  }
+}
+
+resource aksDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: 'diag-aks-controlplane'
+  scope: aks
+  properties: {
+    workspaceId: logAnalyticsWorkspaceId
+    logAnalyticsDestinationType: 'Dedicated'
+    logs: [
+      {
+        category: 'kube-audit-admin'
+        enabled: true
+      }
+      {
+        category: 'kube-apiserver'
+        enabled: true
+      }
+      {
+        category: 'guard'
+        enabled: true
+      }
+    ]
   }
 }
 
