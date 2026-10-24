@@ -1,7 +1,7 @@
 # Wiz-technical-exercise
 
-# Deployments Steps
-1. Run Infrastructure Pipeline
+# Deployments Guide
+1. Run Infrastructure Pipeline and verify rg-wiz-exercise existence 
 2. Run Deploy Pipeline
 3. create role assignement with ACR Pull for kubelet identity
 

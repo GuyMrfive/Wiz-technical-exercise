@@ -72,6 +72,23 @@ resource vmBackupRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   ]
 }
 
+resource existingAcr 'Microsoft.ContainerRegistry/registries@2023-07-01' existing = {
+  name: acrName
+}
+
+resource acrPullRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(acrName, 'aks-wiz-exercise', 'AcrPull')
+  scope: existingAcr
+  properties: {
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '7f951dda-4ed3-4680-a7ca-43fe172d538d'
+    )
+    principalId: aks.outputs.kubeletPrincipalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
 output aksName string = aks.outputs.name
 output acrLoginServer string = acr.outputs.loginServer
 output acrId string = acr.outputs.id
