@@ -42,7 +42,18 @@ module vm './modules/vm.bicep' = {
   }
 }
 
-  
+resource vmContributorRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(resourceGroup().id, 'vm-wiz-mongodb-contributor', 'Contributor')
+  properties: {
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'b24988ac-6180-42a0-ab88-20f7382dd24c'
+    )
+    principalId: vm.outputs.vmPrincipalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
 module storage './modules/storage.bicep' = {
   name: 'storage-deployment'
   params: {
