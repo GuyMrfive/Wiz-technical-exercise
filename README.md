@@ -50,6 +50,17 @@ scp -i ~/.ssh/wiz-exercise \
   scripts/mongodb/init-tasky.sh \
   azureuser@<VM_PUBLIC_IP>:~/
 ```
+run the script inside the VM
+
+```bash
+chmod +x ~/init-tasky.sh
+./init-tasky.sh
+```
+
+Connect to MongoDB
+```bash
+mongo --authenticationDatabase admin -u mongoAdmin -p
+```
 
 Add the New Connection String: 
 
@@ -57,6 +68,10 @@ Add the New Connection String:
 kubectl create secret generic tasky-secrets \
   --from-literal=MONGODB_URI='mongodb://azureuser:YOUR_PASSWORD@10.0.2.4:27017/go-mongodb?authSource=tasky' \
   --dry-run=client -o yaml | kubectl apply -f -
+```
+
+```bash
+kubectl rollout restart deployment/tasky
 ```
 6. Authenticate to MongoDB
 
