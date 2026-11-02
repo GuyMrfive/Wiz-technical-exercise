@@ -90,7 +90,7 @@ db.grantRolesToUser("azureuser", [
 db.getUser("azureuser")
 ```
 
-## Old Commands
+## Other Commands
 
 ```bash
 kubectl rollout restart deployment/tasky
@@ -105,6 +105,9 @@ kubectl describe ingress tasky
 kubectl exec deployment/tasky -- cat /app/wizexercise.txt
 ```
 
+```bash
+sh -i ~/.ssh/wiz-exercise azureuser@20.127.62.86
+```
 
 
 
