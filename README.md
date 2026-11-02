@@ -8,61 +8,27 @@
 
 # Important Commands
 
-1. Activate port Forwading
+## K8s Commands
+
+#### Activate port Forwading
 `kubectl port-forward svc/tasky 8080:80`
-2. ssh into vm (first find the public IP)
-`ssh -i ~/.ssh/wiz-exercise azureuser@<PUBLIC_IP`
-3. Connect to AKS
-```bash
+
+#### Download Kubeconfig, set Context
+```
 az aks get-credentials \
   --resource-group rg-wiz-exercise \
   --name aks-wiz-exercise \
   --admin \
   --overwrite-existing
 ```
-4. get logs from tasky deployment
+
+#### get all logs for deployment
+
 ```bash
 kubectl logs deployment/tasky --tail=100
 ```
-```bash
-kubectl rollout restart deployment/tasky
-kubectl rollout status deployment/tasky
-```
-5. Connect to mongoDB
 
-`sudo cloud-init status --wait`
-
-Check the MongoDB service:
-
-```bash
-sudo systemctl status mongod --no-pager
-```
-Verify the installed version:
-
-```bash
-mongod --version
-```
-
-Copy the init script
-
-```bash
-scp -i ~/.ssh/wiz-exercise \
-  scripts/mongodb/init-tasky.sh \
-  azureuser@<VM_PUBLIC_IP>:~/
-```
-run the script inside the VM
-
-```bash
-chmod +x ~/init-tasky.sh
-./init-tasky.sh
-```
-
-Connect to MongoDB
-```bash
-mongo --authenticationDatabase admin -u mongoAdmin -p
-```
-
-Add the New Connection String: 
+#### Add the New Connection String: 
 
 ```bash
 kubectl create secret generic tasky-secrets \
@@ -70,13 +36,40 @@ kubectl create secret generic tasky-secrets \
   --dry-run=client -o yaml | kubectl apply -f -
 ```
 
+## DB Commands
+
+#### Status of the Cloud-init script
+
+`sudo cloud-init status --wait`
+
+#### Check the MongoDB service:
+
 ```bash
-kubectl rollout restart deployment/tasky
+sudo systemctl status mongod --no-pager
 ```
-6. Authenticate to MongoDB
+#### get MongoDb Version
 
-Connect using the application database account:
+```bash
+mongod --version
+```
 
+#### Copy the init script from scripts directory into VM
+
+```bash
+scp -i ~/.ssh/wiz-exercise \
+  scripts/mongodb/init-tasky.sh \
+  azureuser@<VM_PUBLIC_IP>:~/
+```
+```bash
+chmod +x ~/init-tasky.sh
+./init-tasky.sh
+```
+#### Connect to MongoDB with admin Credentials
+```bash
+mongo --authenticationDatabase admin -u mongoAdmin -p
+```
+
+#### Connect using the Application Account
 ```bash
 mongo --host 127.0.0.1 \
   --authenticationDatabase tasky \
@@ -84,10 +77,7 @@ mongo --host 127.0.0.1 \
   -p
 ```
 
-Enter the MongoDB password
-
-7. Inspect application data
-
+#### Grant readwrite permissions on DB 
 ```bash
 use tasky
 
@@ -100,35 +90,21 @@ db.grantRolesToUser("azureuser", [
 db.getUser("azureuser")
 ```
 
-
-8. get the public ingress
+## Old Commands
 
 ```bash
-kubectl get svc -n ingress-nginx
-kubectl get pods -n ingress-nginx
+kubectl rollout restart deployment/tasky
+kubectl rollout status deployment/tasky
 ```
-
-Inspect the ingress configuration:
 
 ```bash
 kubectl describe ingress tasky
 ```
 
 ```bash
-az vm show \
-  --resource-group rg-wiz-exercise \
-  --name vm-wiz-mongodb \
-  --show-details \
-  --query privateIps \
-  --output tsv
-```
-```bash
 kubectl exec deployment/tasky -- cat /app/wizexercise.txt
 ```
-run trivy locally
-```bash
-trivy image --severity HIGH,CRITICAL tasky:latest
-```
-9. backup mongodb inside vm
+
+
 
 
