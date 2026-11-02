@@ -90,6 +90,14 @@ db.grantRolesToUser("azureuser", [
 db.getUser("azureuser")
 ```
 
+```bash
+show dbs
+use go-mongodb
+show collections
+db.todo.find()
+db.users.find()
+``
+
 ## Other Commands
 
 ```bash
@@ -106,7 +114,7 @@ kubectl exec deployment/tasky -- cat /app/wizexercise.txt
 ```
 
 ```bash
-sh -i ~/.ssh/wiz-exercise azureuser@20.127.62.86
+ssh -i ~/.ssh/wiz-exercise azureuser@20.127.62.86
 ```
 
 
